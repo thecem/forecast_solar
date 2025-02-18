@@ -1,0 +1,268 @@
+## Tempplate Sensor to combine all Forecast Solar sensors to one Forecast list in one sensor
+template:
+  - sensor:
+      - name: "Combined Power Production"
+        unique_id: combined_power_production
+        state: >
+          {% set sensors = [
+            states.sensor.power_production_now,
+            states.sensor.power_production_now_2,
+            states.sensor.power_production_now_3,
+            states.sensor.power_production_now_4,
+            states.sensor.power_production_now_5,
+            states.sensor.power_production_now_6,
+            states.sensor.power_production_now_7,
+            states.sensor.power_production_now_8,
+            states.sensor.power_production_now_9,
+            states.sensor.power_production_now_10,
+            states.sensor.power_production_now_11,
+            states.sensor.power_production_now_12
+          ] %}
+          {% set total = sensors | map(attribute='state') | map('float') | sum %}
+          {{ total }}
+        unit_of_measurement: 'W'
+        state_class: measurement
+        device_class: power
+        attributes:
+          watts_combined: >
+            {% set sensor_1 = states.sensor.power_production_now %}
+            {% set sensor_2 = states.sensor.power_production_now_2 %}
+            {% set sensor_3 = states.sensor.power_production_now_3 %}
+            {% set sensor_4 = states.sensor.power_production_now_4 %}
+            {% set sensor_5 = states.sensor.power_production_now_5 %}
+            {% set sensor_6 = states.sensor.power_production_now_6 %}
+            {% set sensor_7 = states.sensor.power_production_now_7 %}
+            {% set sensor_8 = states.sensor.power_production_now_8 %}
+            {% set sensor_9 = states.sensor.power_production_now_9 %}
+            {% set sensor_10 = states.sensor.power_production_now_10 %}
+            {% set sensor_11 = states.sensor.power_production_now_11 %}
+            {% set sensor_12 = states.sensor.power_production_now_12 %}
+            {% if sensor_1 is not none and sensor_2 is not none and sensor_3 is not none and sensor_4 is not none and sensor_5 is not none and sensor_6 is not none and sensor_7 is not none and sensor_8 is not none and sensor_9 is not none and sensor_10 is not none and sensor_11 is not none and sensor_12 is not none %}
+              {% set watts_1 = sensor_1.attributes.watts %}
+              {% set watts_2 = sensor_2.attributes.watts %}
+              {% set watts_3 = sensor_3.attributes.watts %}
+              {% set watts_4 = sensor_4.attributes.watts %}
+              {% set watts_5 = sensor_5.attributes.watts %}
+              {% set watts_6 = sensor_6.attributes.watts %}
+              {% set watts_7 = sensor_7.attributes.watts %}
+              {% set watts_8 = sensor_8.attributes.watts %}
+              {% set watts_9 = sensor_9.attributes.watts %}
+              {% set watts_10 = sensor_10.attributes.watts %}
+              {% set watts_11 = sensor_11.attributes.watts %}
+              {% set watts_12 = sensor_12.attributes.watts %}
+              {% set result = namespace(data=[]) %}
+              {% for i in range([watts_1 | length, watts_2 | length, watts_3 | length, watts_4 | length, watts_5 | length, watts_6 | length, watts_7 | length, watts_8 | length, watts_9 | length, watts_10 | length, watts_11 | length, watts_12 | length ] | max) %}
+                {% set value_1 = watts_1[i] if i < (watts_1 | length) else 0 %}
+                {% set value_2 = watts_2[i] if i < (watts_2 | length) else 0 %}
+                {% set value_3 = watts_3[i] if i < (watts_3 | length) else 0 %}
+                {% set value_4 = watts_4[i] if i < (watts_4 | length) else 0 %}
+                {% set value_5 = watts_5[i] if i < (watts_5 | length) else 0 %}
+                {% set value_6 = watts_6[i] if i < (watts_6 | length) else 0 %}
+                {% set value_7 = watts_7[i] if i < (watts_7 | length) else 0 %}
+                {% set value_8 = watts_8[i] if i < (watts_8 | length) else 0 %}
+                {% set value_9 = watts_9[i] if i < (watts_9 | length) else 0 %}
+                {% set value_10 = watts_10[i] if i < (watts_10 | length) else 0 %}
+                {% set value_11 = watts_11[i] if i < (watts_11 | length) else 0 %}
+                {% set value_12 = watts_12[i] if i < (watts_12 | length) else 0 %}
+                {% set result.data = result.data + [value_1 + value_2 + value_3 + value_4 + value_5 + value_6 + value_7 + value_8 + value_9 + value_10 + value_11 + value_12] %}
+              {% endfor %}
+              {{ result.data }}
+            {% else %}
+              []
+            {% endif %}
+          watts_timestamps: >
+            {% set sensor_1 = states.sensor.power_production_now %}
+            {% set sensor_2 = states.sensor.power_production_now_2 %}
+            {% set sensor_3 = states.sensor.power_production_now_3 %}
+            {% set sensor_4 = states.sensor.power_production_now_4 %}
+            {% set sensor_5 = states.sensor.power_production_now_5 %}
+            {% set sensor_6 = states.sensor.power_production_now_6 %}
+            {% set sensor_7 = states.sensor.power_production_now_7 %}
+            {% set sensor_8 = states.sensor.power_production_now_8 %}
+            {% set sensor_9 = states.sensor.power_production_now_9 %}
+            {% set sensor_10 = states.sensor.power_production_now_10 %}
+            {% set sensor_11 = states.sensor.power_production_now_11 %}
+            {% set sensor_12 = states.sensor.power_production_now_12 %}
+            {% if sensor_1 is not none and sensor_2 is not none and sensor_3 is not none and sensor_4 is not none and sensor_5 is not none and sensor_6 is not none and sensor_7 is not none and sensor_8 is not none and sensor_9 is not none and sensor_10 is not none and sensor_11 is not none and sensor_12 is not none %}
+              {% set timestamps = (sensor_1.attributes.watts_timestamps + sensor_2.attributes.watts_timestamps + sensor_3.attributes.watts_timestamps + sensor_4.attributes.watts_timestamps + sensor_5.attributes.watts_timestamps + sensor_6.attributes.watts_timestamps + sensor_7.attributes.watts_timestamps + sensor_8.attributes.watts_timestamps + sensor_9.attributes.watts_timestamps + sensor_10.attributes.watts_timestamps + sensor_11.attributes.watts_timestamps + sensor_12.attributes.watts_timestamps) | unique | sort %}
+              {{ timestamps }}
+            {% else %}
+              []
+            {% endif %}
+          wh_days_combined: >
+            {% set sensor_1 = states.sensor.power_production_now %}
+            {% set sensor_2 = states.sensor.power_production_now_2 %}
+            {% set sensor_3 = states.sensor.power_production_now_3 %}
+            {% set sensor_4 = states.sensor.power_production_now_4 %}
+            {% set sensor_5 = states.sensor.power_production_now_5 %}
+            {% set sensor_6 = states.sensor.power_production_now_6 %}
+            {% set sensor_7 = states.sensor.power_production_now_7 %}
+            {% set sensor_8 = states.sensor.power_production_now_8 %}
+            {% set sensor_9 = states.sensor.power_production_now_9 %}
+            {% set sensor_10 = states.sensor.power_production_now_10 %}
+            {% set sensor_11 = states.sensor.power_production_now_11 %}
+            {% set sensor_12 = states.sensor.power_production_now_12 %}
+            {% if sensor_1 is not none and sensor_2 is not none and sensor_3 is not none and sensor_4 is not none and sensor_5 is not none and sensor_6 is not none and sensor_7 is not none and sensor_8 is not none and sensor_9 is not none and sensor_10 is not none and sensor_11 is not none and sensor_12 is not none %}
+              {% set wh_days_1 = sensor_1.attributes.wh_days %}
+              {% set wh_days_2 = sensor_2.attributes.wh_days %}
+              {% set wh_days_3 = sensor_3.attributes.wh_days %}
+              {% set wh_days_4 = sensor_4.attributes.wh_days %}
+              {% set wh_days_5 = sensor_5.attributes.wh_days %}
+              {% set wh_days_6 = sensor_6.attributes.wh_days %}
+              {% set wh_days_7 = sensor_7.attributes.wh_days %}
+              {% set wh_days_8 = sensor_8.attributes.wh_days %}
+              {% set wh_days_9 = sensor_9.attributes.wh_days %}
+              {% set wh_days_10 = sensor_10.attributes.wh_days %}
+              {% set wh_days_11 = sensor_11.attributes.wh_days %}
+              {% set wh_days_12 = sensor_12.attributes.wh_days %}
+              {% set result = namespace(data=[]) %}
+              {% for i in range([wh_days_1 | length, wh_days_2 | length, wh_days_3 | length, wh_days_4 | length, wh_days_5 | length, wh_days_6 | length, wh_days_7 | length, wh_days_8 | length, wh_days_9 | length, wh_days_10 | length, wh_days_11 | length, wh_days_12 | length ] | max) %}
+                {% set value_1 = wh_days_1[i] if i < (wh_days_1 | length) else 0 %}
+                {% set value_2 = wh_days_2[i] if i < (wh_days_2 | length) else 0 %}
+                {% set value_3 = wh_days_3[i] if i < (wh_days_3 | length) else 0 %}
+                {% set value_4 = wh_days_4[i] if i < (wh_days_4 | length) else 0 %}
+                {% set value_5 = wh_days_5[i] if i < (wh_days_5 | length) else 0 %}
+                {% set value_6 = wh_days_6[i] if i < (wh_days_6 | length) else 0 %}
+                {% set value_7 = wh_days_7[i] if i < (wh_days_7 | length) else 0 %}
+                {% set value_8 = wh_days_8[i] if i < (wh_days_8 | length) else 0 %}
+                {% set value_9 = wh_days_9[i] if i < (wh_days_9 | length) else 0 %}
+                {% set value_10 = wh_days_10[i] if i < (wh_days_10 | length) else 0 %}
+                {% set value_11 = wh_days_11[i] if i < (wh_days_11 | length) else 0 %}
+                {% set value_12 = wh_days_12[i] if i < (wh_days_12 | length) else 0 %}
+                {% set result.data = result.data + [value_1 + value_2 + value_3 + value_4 + value_5 + value_6 + value_7 + value_8 + value_9 + value_10 + value_11 + value_12] %}
+              {% endfor %}
+              {{ result.data }}
+            {% else %}
+              []
+            {% endif %}
+          wh_days_timestamps: >
+            {% set sensor_1 = states.sensor.power_production_now %}
+            {% set sensor_2 = states.sensor.power_production_now_2 %}
+            {% set sensor_3 = states.sensor.power_production_now_3 %}
+            {% set sensor_4 = states.sensor.power_production_now_4 %}
+            {% set sensor_5 = states.sensor.power_production_now_5 %}
+            {% set sensor_6 = states.sensor.power_production_now_6 %}
+            {% set sensor_7 = states.sensor.power_production_now_7 %}
+            {% set sensor_8 = states.sensor.power_production_now_8 %}
+            {% set sensor_9 = states.sensor.power_production_now_9 %}
+            {% set sensor_10 = states.sensor.power_production_now_10 %}
+            {% set sensor_11 = states.sensor.power_production_now_11 %}
+            {% set sensor_12 = states.sensor.power_production_now_12 %}
+            {% if sensor_1 is not none and sensor_2 is not none and sensor_3 is not none and sensor_4 is not none and sensor_5 is not none and sensor_6 is not none and sensor_7 is not none and sensor_8 is not none and sensor_9 is not none and sensor_10 is not none and sensor_11 is not none and sensor_12 is not none %}
+              {% set timestamps = (sensor_1.attributes.wh_days_timestamps + sensor_2.attributes.wh_days_timestamps + sensor_3.attributes.wh_days_timestamps + sensor_4.attributes.wh_days_timestamps + sensor_5.attributes.wh_days_timestamps + sensor_6.attributes.wh_days_timestamps + sensor_7.attributes.wh_days_timestamps + sensor_8.attributes.wh_days_timestamps + sensor_9.attributes.wh_days_timestamps + sensor_10.attributes.wh_days_timestamps + sensor_11.attributes.wh_days_timestamps + sensor_12.attributes.wh_days_timestamps) | unique | sort %}
+              {{ timestamps }}
+            {% else %}
+              []
+            {% endif %}
+          wh_period_combined: >
+            {% set sensor_1 = states.sensor.power_production_now %}
+            {% set sensor_2 = states.sensor.power_production_now_2 %}
+            {% set sensor_3 = states.sensor.power_production_now_3 %}
+            {% set sensor_4 = states.sensor.power_production_now_4 %}
+            {% set sensor_5 = states.sensor.power_production_now_5 %}
+            {% set sensor_6 = states.sensor.power_production_now_6 %}
+            {% set sensor_7 = states.sensor.power_production_now_7 %}
+            {% set sensor_8 = states.sensor.power_production_now_8 %}
+            {% set sensor_9 = states.sensor.power_production_now_9 %}
+            {% set sensor_10 = states.sensor.power_production_now_10 %}
+            {% set sensor_11 = states.sensor.power_production_now_11 %}
+            {% set sensor_12 = states.sensor.power_production_now_12 %}
+            {% if sensor_1 is not none and sensor_2 is not none and sensor_3 is not none and sensor_4 is not none and sensor_5 is not none and sensor_6 is not none and sensor_7 is not none and sensor_8 is not none and sensor_9 is not none and sensor_10 is not none and sensor_11 is not none and sensor_12 is not none %}
+              {% set wh_period_1 = sensor_1.attributes.wh_period %}
+              {% set wh_period_2 = sensor_2.attributes.wh_period %}
+              {% set wh_period_3 = sensor_3.attributes.wh_period %}
+              {% set wh_period_4 = sensor_4.attributes.wh_period %}
+              {% set wh_period_5 = sensor_5.attributes.wh_period %}
+              {% set wh_period_6 = sensor_6.attributes.wh_period %}
+              {% set wh_period_7 = sensor_7.attributes.wh_period %}
+              {% set wh_period_8 = sensor_8.attributes.wh_period %}
+              {% set wh_period_9 = sensor_9.attributes.wh_period %}
+              {% set wh_period_10 = sensor_10.attributes.wh_period %}
+              {% set wh_period_11 = sensor_11.attributes.wh_period %}
+              {% set wh_period_12 = sensor_12.attributes.wh_period %}
+              {% set result = namespace(data=[]) %}
+              {% for i in range([wh_period_1 | length, wh_period_2 | length, wh_period_3 | length, wh_period_4 | length, wh_period_5 | length, wh_period_6 | length, wh_period_7 | length, wh_period_8 | length, wh_period_9 | length, wh_period_10 | length, wh_period_11 | length, wh_period_12 | length ] | max) %}
+                {% set value_1 = wh_period_1[i] if i < (wh_period_1 | length) else 0 %}
+                {% set value_2 = wh_period_2[i] if i < (wh_period_2 | length) else 0 %}
+                {% set value_3 = wh_period_3[i] if i < (wh_period_3 | length) else 0 %}
+                {% set value_4 = wh_period_4[i] if i < (wh_period_4 | length) else 0 %}
+                {% set value_5 = wh_period_5[i] if i < (wh_period_5 | length) else 0 %}
+                {% set value_6 = wh_period_6[i] if i < (wh_period_6 | length) else 0 %}
+                {% set value_7 = wh_period_7[i] if i < (wh_period_7 | length) else 0 %}
+                {% set value_8 = wh_period_8[i] if i < (wh_period_8 | length) else 0 %}
+                {% set value_9 = wh_period_9[i] if i < (wh_period_9 | length) else 0 %}
+                {% set value_10 = wh_period_10[i] if i < (wh_period_10 | length) else 0 %}
+                {% set value_11 = wh_period_11[i] if i < (wh_period_11 | length) else 0 %}
+                {% set value_12 = wh_period_12[i] if i < (wh_period_12 | length) else 0 %}
+                {% set result.data = result.data + [value_1 + value_2 + value_3 + value_4 + value_5 + value_6 + value_7 + value_8 + value_9 + value_10 + value_11 + value_12] %}
+              {% endfor %}
+              {{ result.data }}
+            {% else %}
+              []
+            {% endif %}
+          wh_period_timestamps: >
+            {% set sensor_1 = states.sensor.power_production_now %}
+            {% set sensor_2 = states.sensor.power_production_now_2 %}
+            {% set sensor_3 = states.sensor.power_production_now_3 %}
+            {% set sensor_4 = states.sensor.power_production_now_4 %}
+            {% set sensor_5 = states.sensor.power_production_now_5 %}
+            {% set sensor_6 = states.sensor.power_production_now_6 %}
+            {% set sensor_7 = states.sensor.power_production_now_7 %}
+            {% set sensor_8 = states.sensor.power_production_now_8 %}
+            {% set sensor_9 = states.sensor.power_production_now_9 %}
+            {% set sensor_10 = states.sensor.power_production_now_10 %}
+            {% set sensor_11 = states.sensor.power_production_now_11 %}
+            {% set sensor_12 = states.sensor.power_production_now_12 %}
+            {% if sensor_1 is not none and sensor_2 is not none and sensor_3 is not none and sensor_4 is not none and sensor_5 is not none and sensor_6 is not none and sensor_7 is not none and sensor_8 is not none and sensor_9 is not none and sensor_10 is not none and sensor_11 is not none and sensor_12 is not none %}
+              {% set timestamps = (sensor_1.attributes.wh_period_timestamps + sensor_2.attributes.wh_period_timestamps + sensor_3.attributes.wh_period_timestamps + sensor_4.attributes.wh_period_timestamps + sensor_5.attributes.wh_period_timestamps + sensor_6.attributes.wh_period_timestamps + sensor_7.attributes.wh_period_timestamps + sensor_8.attributes.wh_period_timestamps + sensor_9.attributes.wh_period_timestamps + sensor_10.attributes.wh_period_timestamps + sensor_11.attributes.wh_period_timestamps + sensor_12.attributes.wh_period_timestamps) | unique | sort %}
+              {{ timestamps }}
+            {% else %}
+              []
+            {% endif %}
+          watts_combined_with_timestamps: >
+            {% set sensor_1 = states.sensor.power_production_now %}
+            {% set sensor_2 = states.sensor.power_production_now_2 %}
+            {% set sensor_3 = states.sensor.power_production_now_3 %}
+            {% set sensor_4 = states.sensor.power_production_now_4 %}
+            {% set sensor_5 = states.sensor.power_production_now_5 %}
+            {% set sensor_6 = states.sensor.power_production_now_6 %}
+            {% set sensor_7 = states.sensor.power_production_now_7 %}
+            {% set sensor_8 = states.sensor.power_production_now_8 %}
+            {% set sensor_9 = states.sensor.power_production_now_9 %}
+            {% set sensor_10 = states.sensor.power_production_now_10 %}
+            {% set sensor_11 = states.sensor.power_production_now_11 %}
+            {% set sensor_12 = states.sensor.power_production_now_12 %}
+            {% if sensor_1 is not none and sensor_2 is not none and sensor_3 is not none and sensor_4 is not none and sensor_5 is not none and sensor_6 is not none and sensor_7 is not none and sensor_8 is not none and sensor_9 is not none and sensor_10 is not none and sensor_11 is not none and sensor_12 is not none %}
+              {% set watts_1 = sensor_1.attributes.watts %}
+              {% set watts_2 = sensor_2.attributes.watts %}
+              {% set watts_3 = sensor_3.attributes.watts %}
+              {% set watts_4 = sensor_4.attributes.watts %}
+              {% set watts_5 = sensor_5.attributes.watts %}
+              {% set watts_6 = sensor_6.attributes.watts %}
+              {% set watts_7 = sensor_7.attributes.watts %}
+              {% set watts_8 = sensor_8.attributes.watts %}
+              {% set watts_9 = sensor_9.attributes.watts %}
+              {% set watts_10 = sensor_10.attributes.watts %}
+              {% set watts_11 = sensor_11.attributes.watts %}
+              {% set watts_12 = sensor_12.attributes.watts %}
+              {% set timestamps = (sensor_1.attributes.watts_timestamps + sensor_2.attributes.watts_timestamps + sensor_3.attributes.watts_timestamps + sensor_4.attributes.watts_timestamps + sensor_5.attributes.watts_timestamps + sensor_6.attributes.watts_timestamps + sensor_7.attributes.watts_timestamps + sensor_8.attributes.watts_timestamps + sensor_9.attributes.watts_timestamps + sensor_10.attributes.watts_timestamps + sensor_11.attributes.watts_timestamps + sensor_12.attributes.watts_timestamps) | unique | sort %}
+              {% set result = namespace(data=[]) %}
+              {% for i in range([watts_1 | length, watts_2 | length, watts_3 | length, watts_4 | length, watts_5 | length, watts_6 | length, watts_7 | length, watts_8 | length, watts_9 | length, watts_10 | length, watts_11 | length, watts_12 | length] | max) %}
+                {% set value_1 = watts_1[i] if i < (watts_1 | length) else 0 %}
+                {% set value_2 = watts_2[i] if i < (watts_2 | length) else 0 %}
+                {% set value_3 = watts_3[i] if i < (watts_3 | length) else 0 %}
+                {% set value_4 = watts_4[i] if i < (watts_4 | length) else 0 %}
+                {% set value_5 = watts_5[i] if i < (watts_5 | length) else 0 %}
+                {% set value_6 = watts_6[i] if i < (watts_6 | length) else 0 %}
+                {% set value_7 = watts_7[i] if i < (watts_7 | length) else 0 %}
+                {% set value_8 = watts_8[i] if i < (watts_8 | length) else 0 %}
+                {% set value_9 = watts_9[i] if i < (watts_9 | length) else 0 %}
+                {% set value_10 = watts_10[i] if i < (watts_10 | length) else 0 %}
+                {% set value_11 = watts_11[i] if i < (watts_11 | length) else 0 %}
+                {% set value_12 = watts_12[i] if i < (watts_12 | length) else 0 %}
+                {% set result.data = result.data + ["{}:{}".format(timestamps[i], value_1 + value_2 + value_3 + value_4 + value_5 + value_6 + value_7 + value_8 + value_9 + value_10 + value_11 + value_12)] %}
+              {% endfor %}
+              {{ result.data }}
+            {% else %}
+              []
+            {% endif %}
