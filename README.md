@@ -19,11 +19,12 @@ the Power Production Now sensor will expand with attributes.
 ```
 
 
-## Configuration of the Template Sensor
+## Configuration
+### Template Sensor
 To combine every single forcast solar sensor you need to add the template sensor example to your configuration.
 You have to adapt the template sesnor for your need´s.
 
-## Configuration with spilted config file
+### Spilted config file
 
 >[!NOTE]
 >Information how to split your home assitant configuration:
@@ -36,5 +37,5 @@ Add following to your configuration:
 homeassistant:
   packages: !include_dir_named packages
 ```
-## Configuration of evcc
+### evcc
 https://github.com/evcc-io/evcc/issues/18857#issuecomment-2664731520
