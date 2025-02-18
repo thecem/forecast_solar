@@ -17,7 +17,7 @@ You have to adapt the template sesnor for your need´s.
 >Information how to split your home assitant configuration:
 >https://www.home-assistant.io/docs/configuration/splitting_configuration/
 >
-Copy forecast_solar_sensor.yaml to the `/config/packes`
+Copy forecast_solar_sensor.yaml to the `/config/packages`
 
 Add following to your configuration:
 ```
